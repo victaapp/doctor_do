@@ -41,13 +41,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    user_ = UserSerializer(source="user")
+    user_ = UserSerializer(source="user", required=False)
 
     class Meta:
         model = Doctor
         fields = (
             "id",
-            # "user",
+            "user",
             "user_",
             "specialty",
             "hospital",

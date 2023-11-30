@@ -19,9 +19,9 @@ class RegisterApi(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response({
-            "user": UserSerializer(user,    context=self.get_serializer_context()).data,
-            "message": "User Created Successfully.  Now perform Login to get your token",
-        })
+            "user": UserSerializer(user).data,
+            "message": "User Created Successfully. Now perform Login to get your token",
+        }, status=status.HTTP_201_CREATED)
 
 
 class DoctorListAPI(APIView):
@@ -32,26 +32,17 @@ class DoctorListAPI(APIView):
         except Doctor.DoesNotExist:
             raise Http404
 
-    def get(self, request):
-        # import pdb;pdb.set_trace()
-        # if pk:
-        #     snippet = self.get_object(pk)
-        #     serializer = DoctorSerializer(snippet)
-        #     return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request,  id=None):
+        if id is not None:
+            doctor = self.get_object(id)
+            serializer = DoctorSerializer(doctor)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            # return self.retrieve(request, id)
+        
         queryset = Doctor.objects.all()
         serializer = DoctorSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrive(self, request, id):
-        obj = Doctor.objects.filter(id=id)
-        import pdb;pdb.set_trace()
-        if obj.exists():
-            serializer = DoctorSerializer(obj.first())
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        return Response({"error":"Object not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
+    
     def post(self, request, *args, **kwargs):
         serializer = DoctorSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -59,7 +50,7 @@ class DoctorListAPI(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request, id):
-        obj = Doctor.objects.filter(id=id)
+        obj = self.get_object(id)
         if obj.exists():
             serializer = DoctorSerializer(obj.first(), data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
