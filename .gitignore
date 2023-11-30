@@ -1,0 +1,12 @@
+__pycache__/
+
+# Ignore logs
+*.log
+
+# Ignore IDE or text editor configuration files
+.vscode/
+.idea/
+
+# Ignore database files
+*.sqlite3
+*.db
