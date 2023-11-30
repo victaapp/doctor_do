@@ -9,6 +9,7 @@ from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
 from .serializer import *
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 
 #Register API
@@ -26,18 +27,11 @@ class RegisterApi(generics.GenericAPIView):
 
 class DoctorListAPI(APIView):
 
-    def get_object(self, pk):
-        try:
-            return Doctor.objects.get(pk=pk)
-        except Doctor.DoesNotExist:
-            raise Http404
-
     def get(self, request,  id=None):
         if id is not None:
-            doctor = self.get_object(id)
+            doctor = get_object_or_404(Doctor, pk=id)
             serializer = DoctorSerializer(doctor)
             return Response(serializer.data, status=status.HTTP_200_OK)
-            # return self.retrieve(request, id)
         
         queryset = Doctor.objects.all()
         serializer = DoctorSerializer(queryset, many=True)
@@ -50,7 +44,7 @@ class DoctorListAPI(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request, id):
-        obj = self.get_object(id)
+        obj = get_object_or_404(Doctor, pk=id)
         if obj.exists():
             serializer = DoctorSerializer(obj.first(), data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
