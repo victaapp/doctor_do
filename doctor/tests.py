@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from .response import *
 from .models import *
-import pdb as w
+import pdb
 
 
 class UserTestCases(TestCase):
@@ -120,8 +120,35 @@ class DoctorTestCases(TestCase):
         response = self.client.patch(reverse('doctors_obj', args=[
                                      not_found_doctor_id]), data=data_for_update, content_type="application/json")
         self.assertEqual(response.status_code, 404)
-        w.set_trace()
 
+    def test_doctor_delete(self):
+        user_payload = {
+            "username": "test",
+            "email": "test@doc.com",
+            "first_name": "test",
+            "last_name": "test",
+            "password": "Now@12345"
+        }
+        user_response = self.client.post(
+            reverse("register_user"), data=user_payload, content_type="application/json")
 
+        payload = {
+            "user": user_response.data['user']['id'],
+            "specialty": "Internal medicine",
+            "education": "MBBS",
+            "phone_number": 8627867890,
+            "in_clinic_fee": 500,
+            "video_fee": 350,
+            "audio_fee": 350,
+            "hospital": "",
+            "address": "",
+            "experience": 5
+        }
+        response = self.client.post(
+            reverse('doctors'), data=payload, content_type="application/json")
+
+        doctor_id = response.data['id']
+        response = self.client.delete(reverse('doctors_obj', args=[doctor_id]))
+        self.assertEqual(response.status_code, 204)
 
 # Create your tests here.

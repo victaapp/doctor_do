@@ -63,3 +63,9 @@ class DoctorSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at"
         )
+
+class TreatmentsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Treatments
+        fields = "__all__"
