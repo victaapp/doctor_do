@@ -5,7 +5,6 @@ from .response import *
 from .models import *
 import pdb
 
-
 class UserTestCases(TestCase):
     def test_create_user(self):
         payload = {
@@ -122,6 +121,7 @@ class DoctorTestCases(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+
 # Create your tests here.
 class TreatmentsAPITest(TestCase):
 
@@ -131,12 +131,25 @@ class TreatmentsAPITest(TestCase):
             "description": "Test treatment description"
         }
         url = reverse('treatment')
-        response = self.client.post(
-            url, data=payload, content_type="application/json")
+        response = self.client.post(url, data=payload, content_type="application/json")
         self.assertEqual(response.status_code, 201)
 
     def test_get_treatments(self):
+        payload = {
+            "title": "Test treatment title",
+            "description": "Test treatment description"
+        }
+
         treatment_url = reverse('treatment')
         response_list = self.client.get(
             treatment_url, content_type="application/json")
         self.assertEqual(response_list.status_code, 200)
+        
+        
+        Treatments.objects.create(title="title", description="description")
+        treat_id = Treatments.objects.last().id
+        treatment_url_obj = reverse('treatment_obj', args=[treat_id])
+        pdb.set_trace()
+
+        response_list_obj = self.client.get(treatment_url_obj, content_type="application/json")
+        self.assertEqual(response_list_obj.status_code, 200)
