@@ -14,5 +14,6 @@ urlpatterns = [
 
     path('treatment/', DoctorTreatmentAPI.as_view(), name="doctor_treatment"),
     path('treatment/<int:id>/', DoctorTreatmentAPI.as_view(), name="doctor_treatment_obj"),
+
     
 ]
