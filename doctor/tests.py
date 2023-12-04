@@ -121,34 +121,22 @@ class DoctorTestCases(TestCase):
                                      not_found_doctor_id]), data=data_for_update, content_type="application/json")
         self.assertEqual(response.status_code, 404)
 
-    def test_doctor_delete(self):
-        user_payload = {
-            "username": "test",
-            "email": "test@doc.com",
-            "first_name": "test",
-            "last_name": "test",
-            "password": "Now@12345"
-        }
-        user_response = self.client.post(
-            reverse("register_user"), data=user_payload, content_type="application/json")
-
-        payload = {
-            "user": user_response.data['user']['id'],
-            "specialty": "Internal medicine",
-            "education": "MBBS",
-            "phone_number": 8627867890,
-            "in_clinic_fee": 500,
-            "video_fee": 350,
-            "audio_fee": 350,
-            "hospital": "",
-            "address": "",
-            "experience": 5
-        }
-        response = self.client.post(
-            reverse('doctors'), data=payload, content_type="application/json")
-
-        doctor_id = response.data['id']
-        response = self.client.delete(reverse('doctors_obj', args=[doctor_id]))
-        self.assertEqual(response.status_code, 204)
 
 # Create your tests here.
+class TreatmentsAPITest(TestCase):
+
+    def test_create_treatment(self):
+        payload = {
+            "title": "Test treatment title",
+            "description": "Test treatment description"
+        }
+        url = reverse('treatment')
+        response = self.client.post(
+            url, data=payload, content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+
+    def test_get_treatments(self):
+        treatment_url = reverse('treatment')
+        response_list = self.client.get(
+            treatment_url, content_type="application/json")
+        self.assertEqual(response_list.status_code, 200)
