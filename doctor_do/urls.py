@@ -23,6 +23,7 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from django.conf import settings
 from doctor.views import TreatmentAPI
+from corelation_app.views import *
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -41,6 +42,8 @@ urlpatterns = [
     path('api/treatment/', TreatmentAPI.as_view(), name="treatment"),
     path('api/treatment/<int:id>/', TreatmentAPI.as_view(), name="treatment_obj"),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
+    path('calculatecorrelation/', CorrelationCoefficientView.as_view(), name='calculate_correlation'),
+    
 ]
 
 if settings.DEBUG:
