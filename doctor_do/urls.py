@@ -42,7 +42,6 @@ urlpatterns = [
     path('api/treatment/', TreatmentAPI.as_view(), name="treatment"),
     path('api/treatment/<int:id>/', TreatmentAPI.as_view(), name="treatment_obj"),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
-    path('calculatecorrelation/', CorrelationCoefficientView.as_view(), name='calculate_correlation'),
     
 ]
 
